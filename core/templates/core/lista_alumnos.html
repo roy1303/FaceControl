@@ -1,0 +1,81 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Alumnos - Face Control{% endblock %}
+
+{% block content %}
+<div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold text-gray-800">Alumnos</h1>
+    <a href="/admin/core/alumno/add/" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg transition">
+        ➕ Nuevo Alumno
+    </a>
+</div>
+
+<!-- Filtros -->
+<form method="get" class="bg-white rounded-lg shadow-md p-4 mb-6">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Buscar</label>
+            <input type="text" name="q" value="{{ busqueda }}" placeholder="Nombre o matrícula..."
+                   class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+        </div>
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Grupo</label>
+            <select name="grupo" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                <option value="">Todos los grupos</option>
+                {% for grupo in grupos %}
+                    <option value="{{ grupo.id }}" {% if grupo_seleccionado == grupo.id|stringformat:"s" %}selected{% endif %}>
+                        {{ grupo.nombre }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="flex items-end">
+            <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2 rounded-lg transition w-full">
+                Filtrar
+            </button>
+        </div>
+    </div>
+</form>
+
+<!-- Tabla -->
+<div class="bg-white rounded-lg shadow-md overflow-hidden">
+    <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+            <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Matrícula</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nombre</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Grupo</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Encoding</th>
+                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Acciones</th>
+            </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+            {% for alumno in alumnos %}
+            <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ alumno.matricula }}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                    {{ alumno.apellido_paterno }} {{ alumno.apellido_materno }}, {{ alumno.nombre }}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                    {{ alumno.grupo.nombre|default:"Sin grupo" }}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm">
+                    {% if alumno.encoding_facial %}
+                        <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">✅ Registrado</span>
+                    {% else %}
+                        <span class="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs">❌ Sin encoding</span>
+                    {% endif %}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
+                    <a href="{% url 'core:detalle_alumno' alumno.id %}" class="text-emerald-600 hover:text-emerald-900">Ver</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="px-6 py-8 text-center text-gray-500">No hay alumnos registrados.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

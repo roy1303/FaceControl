@@ -1,0 +1,89 @@
+{% extends 'core/base.html' %}
+
+{% block title %}{{ alumno.nombre }} - Face Control{% endblock %}
+
+{% block content %}
+<a href="{% url 'core:lista_alumnos' %}" class="text-emerald-600 hover:text-emerald-800 mb-4 inline-block">← Volver a alumnos</a>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <h1 class="text-2xl font-bold text-gray-800 mb-4">
+            {{ alumno.nombre }} {{ alumno.apellido_paterno }}
+        </h1>
+
+        {% if alumno.foto_referencia %}
+            <img src="{{ alumno.foto_referencia.url }}" alt="Foto" class="w-full rounded-lg mb-4 object-cover">
+        {% else %}
+            <div class="w-full h-48 bg-gray-200 rounded-lg mb-4 flex items-center justify-center text-gray-400">
+                Sin foto
+            </div>
+        {% endif %}
+
+        <dl class="space-y-2 text-sm">
+            <div class="flex justify-between">
+                <dt class="text-gray-500">Matrícula:</dt>
+                <dd class="font-medium">{{ alumno.matricula }}</dd>
+            </div>
+            <div class="flex justify-between">
+                <dt class="text-gray-500">Grupo:</dt>
+                <dd class="font-medium">{{ alumno.grupo.nombre|default:"Sin grupo" }}</dd>
+            </div>
+            <div class="flex justify-between">
+                <dt class="text-gray-500">Estado:</dt>
+                <dd class="font-medium">
+                    {% if alumno.activo %}
+                        <span class="text-green-600">Activo</span>
+                    {% else %}
+                        <span class="text-red-600">Inactivo</span>
+                    {% endif %}
+                </dd>
+            </div>
+            <div class="flex justify-between">
+                <dt class="text-gray-500">Encoding facial:</dt>
+                <dd class="font-medium">
+                    {% if alumno.encoding_facial %}✅ Sí{% else %}❌ No{% endif %}
+                </dd>
+            </div>
+        </dl>
+    </div>
+
+    <div class="md:col-span-2 bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-bold text-gray-800 mb-4">Últimas Asistencias</h2>
+
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Fecha</th>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Hora</th>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Materia</th>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Profesor</th>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Tipo</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+                {% for asistencia in asistencias %}
+                <tr>
+                    <td class="px-4 py-2 text-sm">{{ asistencia.fecha|date:"d/m/Y" }}</td>
+                    <td class="px-4 py-2 text-sm">{{ asistencia.hora|time:"H:i:s" }}</td>
+                    <td class="px-4 py-2 text-sm">{{ asistencia.materia.nombre|default:"—" }}</td>
+                    <td class="px-4 py-2 text-sm">{{ asistencia.profesor|default:"—" }}</td>
+                    <td class="px-4 py-2 text-sm">
+                        {% if asistencia.tipo == 'ASISTENCIA' %}
+                            <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Asistencia</span>
+                        {% elif asistencia.tipo == 'RETARDO' %}
+                            <span class="px-2 py-1 bg-amber-100 text-amber-800 rounded-full text-xs">Retardo</span>
+                        {% else %}
+                            <span class="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs">Falta</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="px-4 py-8 text-center text-gray-500">Sin asistencias registradas.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,135 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Bitácora - Face Control{% endblock %}
+
+{% block content %}
+<div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold text-gray-800">Bitácora de Asistencias</h1>
+    <a href="{% url 'core:descargar_excel' %}?{{ request.GET.urlencode }}"
+       class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg transition">
+        📥 Descargar Excel
+    </a>
+</div>
+
+<form method="get" class="bg-white rounded-lg shadow-md p-4 mb-6">
+    <div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-7 gap-4">
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Desde</label>
+            <input type="date" name="fecha_desde" value="{{ fecha_desde }}"
+                   class="w-full border border-gray-300 rounded-lg px-3 py-2">
+        </div>
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Hasta</label>
+            <input type="date" name="fecha_hasta" value="{{ fecha_hasta }}"
+                   class="w-full border border-gray-300 rounded-lg px-3 py-2">
+        </div>
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Grupo</label>
+            <select name="grupo" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                <option value="">Todos</option>
+                {% for grupo in grupos %}
+                    <option value="{{ grupo.id }}" {% if grupo_seleccionado == grupo.id|stringformat:"s" %}selected{% endif %}>
+                        {{ grupo.nombre }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Materia</label>
+            <select name="materia" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                <option value="">Todas</option>
+                {% for materia in materias %}
+                    <option value="{{ materia.id }}" {% if materia_seleccionada == materia.id|stringformat:"s" %}selected{% endif %}>
+                        {{ materia.nombre }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Profesor</label>
+            <select name="profesor" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                <option value="">Todos</option>
+                {% for profesor in profesores %}
+                    <option value="{{ profesor.id }}" {% if profesor_seleccionado == profesor.id|stringformat:"s" %}selected{% endif %}>
+                        {{ profesor }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Horario</label>
+            <select name="horario" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                <option value="">Todos</option>
+                {% for horario in horarios %}
+                    <option value="{{ horario.id }}" {% if horario_seleccionado == horario.id|stringformat:"s" %}selected{% endif %}>
+                        {{ horario }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Tipo</label>
+            <select name="tipo" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                <option value="">Todos</option>
+                <option value="ASISTENCIA" {% if tipo_seleccionado == 'ASISTENCIA' %}selected{% endif %}>Asistencia</option>
+                <option value="RETARDO" {% if tipo_seleccionado == 'RETARDO' %}selected{% endif %}>Retardo</option>
+                <option value="FALTA" {% if tipo_seleccionado == 'FALTA' %}selected{% endif %}>Falta</option>
+            </select>
+        </div>
+    </div>
+    <div class="mt-4 flex justify-end">
+        <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2 rounded-lg transition">
+            Filtrar
+        </button>
+    </div>
+</form>
+
+<div class="bg-white rounded-lg shadow-md overflow-x-auto">
+    <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+            <tr>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Matrícula</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Alumno</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Grupo</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Materia</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Profesor</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Horario</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Fecha</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Hora</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tipo</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Confianza</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200">
+            {% for registro in registros %}
+            <tr class="hover:bg-gray-50">
+                <td class="px-4 py-3 text-sm">{{ registro.alumno.matricula }}</td>
+                <td class="px-4 py-3 text-sm">
+                    {{ registro.alumno.apellido_paterno }} {{ registro.alumno.nombre }}
+                </td>
+                <td class="px-4 py-3 text-sm">{{ registro.alumno.grupo.nombre|default:"—" }}</td>
+                <td class="px-4 py-3 text-sm">{{ registro.materia.nombre|default:"—" }}</td>
+                <td class="px-4 py-3 text-sm">{{ registro.profesor|default:"—" }}</td>
+                <td class="px-4 py-3 text-sm">{{ registro.horario|default:"—" }}</td>
+                <td class="px-4 py-3 text-sm">{{ registro.fecha|date:"d/m/Y" }}</td>
+                <td class="px-4 py-3 text-sm">{{ registro.hora|time:"H:i:s" }}</td>
+                <td class="px-4 py-3 text-sm">
+                    {% if registro.tipo == 'ASISTENCIA' %}
+                        <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Asistencia</span>
+                    {% elif registro.tipo == 'RETARDO' %}
+                        <span class="px-2 py-1 bg-amber-100 text-amber-800 rounded-full text-xs">Retardo</span>
+                    {% else %}
+                        <span class="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs">Falta</span>
+                    {% endif %}
+                </td>
+                <td class="px-4 py-3 text-sm">{{ registro.confianza|floatformat:2|default:"—" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="10" class="px-4 py-8 text-center text-gray-500">No hay registros con esos filtros.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

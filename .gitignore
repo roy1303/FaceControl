@@ -1,0 +1,25 @@
+# Entorno virtual
+venv_face311/
+.venv/
+venv/
+
+# Archivos de Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django
+db.sqlite3
+db.sqlite3-journal
+*.log
+
+# Archivos de configuración y secretos
+.env
+*.env
+
+# Archivos de VS Code
+.vscode/
+.idea/
+
+# Media (opcional, si no quieres subir fotos de alumnos)
+media/

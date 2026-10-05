@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Face Control{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+
+    <!-- Barra de navegación -->
+    <nav class="bg-emerald-800 text-white shadow-lg">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-2">
+                    <span class="text-2xl">👤</span>
+                    <a href="{% url 'core:inicio' %}" class="text-xl font-bold">Face Control</a>
+                </div>
+                <div class="flex space-x-6">
+                    <a href="{% url 'core:inicio' %}" class="hover:text-emerald-200 transition">Inicio</a>
+                    <a href="{% url 'core:lista_alumnos' %}" class="hover:text-emerald-200 transition">Alumnos</a>
+                    <a href="{% url 'core:bitacora' %}" class="hover:text-emerald-200 transition">Bitácora</a>
+                    <a href="{% url 'core:tomar_asistencia' %}" class="hover:text-emerald-200 transition">Tomar Asistencia</a>
+                    <a href="/admin/" class="hover:text-emerald-200 transition">Admin</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido -->
+    <main class="container mx-auto px-4 py-8">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-gray-300 text-center py-4 mt-8">
+        <p>Face Control &copy; {% now "Y" %} — Sistema de Pase de Lista</p>
+    </footer>
+
+</body>
+</html>

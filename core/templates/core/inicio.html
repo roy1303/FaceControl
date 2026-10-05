@@ -1,0 +1,63 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Inicio - Face Control{% endblock %}
+
+{% block content %}
+<h1 class="text-3xl font-bold text-gray-800 mb-8">Panel de Control</h1>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <!-- Card: Alumnos -->
+    <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-emerald-600">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-gray-500 text-sm uppercase">Alumnos Activos</p>
+                <p class="text-4xl font-bold text-emerald-700">{{ total_alumnos }}</p>
+            </div>
+            <span class="text-5xl">🎓</span>
+        </div>
+    </div>
+
+    <!-- Card: Grupos -->
+    <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-blue-600">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-gray-500 text-sm uppercase">Grupos</p>
+                <p class="text-4xl font-bold text-blue-700">{{ total_grupos }}</p>
+            </div>
+            <span class="text-5xl">🏫</span>
+        </div>
+    </div>
+
+    <!-- Card: Registros hoy -->
+    <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-amber-600">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-gray-500 text-sm uppercase">Registros Hoy</p>
+                <p class="text-4xl font-bold text-amber-700">{{ total_registros_hoy }}</p>
+            </div>
+            <span class="text-5xl">📋</span>
+        </div>
+    </div>
+</div>
+
+<!-- Acciones rápidas -->
+<h2 class="text-2xl font-bold text-gray-800 mb-4">Acciones Rápidas</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <a href="{% url 'core:tomar_asistencia' %}" class="bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg p-6 text-center transition shadow-md">
+        <span class="text-4xl block mb-2">📸</span>
+        <span class="font-semibold">Tomar Asistencia</span>
+    </a>
+    <a href="{% url 'core:lista_alumnos' %}" class="bg-blue-600 hover:bg-blue-700 text-white rounded-lg p-6 text-center transition shadow-md">
+        <span class="text-4xl block mb-2">👥</span>
+        <span class="font-semibold">Ver Alumnos</span>
+    </a>
+    <a href="{% url 'core:bitacora' %}" class="bg-purple-600 hover:bg-purple-700 text-white rounded-lg p-6 text-center transition shadow-md">
+        <span class="text-4xl block mb-2">📊</span>
+        <span class="font-semibold">Ver Bitácora</span>
+    </a>
+    <a href="/admin/core/alumno/add/" class="bg-amber-600 hover:bg-amber-700 text-white rounded-lg p-6 text-center transition shadow-md">
+        <span class="text-4xl block mb-2">➕</span>
+        <span class="font-semibold">Registrar Alumno</span>
+    </a>
+</div>
+{% endblock %}
